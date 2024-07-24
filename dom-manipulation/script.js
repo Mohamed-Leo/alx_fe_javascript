@@ -48,7 +48,7 @@ function createAddQuoteForm() {
         <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
         <button onclick="addQuote()">Add Quote</button>
     `;
-    document.body.append(formDiv);
+    document.body.appendChild(formDiv);
 
     // form created-----
     formCreated = true;
