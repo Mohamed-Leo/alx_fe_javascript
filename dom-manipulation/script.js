@@ -131,7 +131,7 @@ function saveQuotes() {
 }
 
 
-function populateCategoryFilter() {
+function populateCategories() {
     const categories = ['all'];
     quotes.forEach(quote => {
         if (!categories.includes(quote.category)) {
@@ -144,7 +144,7 @@ function populateCategoryFilter() {
 }
 
 
-function filterQuotes() {
+function filterQuote () {
     const selectedCategory = categoryFilterSelect.value;
     localStorage.selectedCategory = selectedCategory;
     showRandomQuote();
@@ -154,7 +154,7 @@ function filterQuotes() {
 window.onload = () => {
     if (localStorage.quotesData) {
         quotes = JSON.parse(localStorage.quotesData);
-        populateCategoryFilter();
-        filterQuotes();
+        populateCategories();
+        filterQuote ();
     }
 };
