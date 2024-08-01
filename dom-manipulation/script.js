@@ -158,3 +158,67 @@ window.onload = () => {
         filterQuote ();
     }
 };
+
+
+
+
+// Define a URL to simulate the server endpoint
+const Serve_URL = "https://jsonplaceholder.typicode.com/posts";
+
+
+// Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch(Serve_URL);
+        const serverQuotes = await response.json();
+        return serverQuotes.map(q => ({ text: q.body, category: 'General' })); // Map the server response to match our data structure
+    }
+    catch {
+        console.error("Error fetching quotes from server");
+        return [];
+    }
+}
+
+
+
+
+// Periodically fetch quotes from the server and sync with local storage
+async function syncQuotes() {
+    const serverQuotes = await fetchQuotesFromServer();
+
+    if (serverQuotes.length === 0) {
+        return;
+    }
+
+    // Get local quotes
+    let localQuotes = JSON.parse(localStorage.getItem('quotesData')) || [];
+
+    // Merge server quotes with local quotes
+    const allQuotes = [...serverQuotes, ...localQuotes];
+    const uniqueQuotes = allQuotes.filter((quote, index, self) =>
+        index === self.findIndex(q => q.text === quote.text)
+    );
+
+    // Update local storage with merged quotes
+    localStorage.setItem('quotesData', JSON.stringify(uniqueQuotes));
+
+    // Notify user of sync completion
+    notifyUser('Quotes synchronized with the server');
+}
+// Start periodic syncing
+syncQuotes();
+
+
+
+// Notify the user about data updates
+function notifyUser(message) {
+    const notificationDiv = document.createElement('div');
+    notificationDiv.textContent = message;
+    notificationDiv.style.position = 'fixed';
+    notificationDiv.style.bottom = '10px';
+    notificationDiv.style.right = '10px';
+    notificationDiv.style.padding = '10px';
+    notificationDiv.style.backgroundColor = 'lightblue';
+    document.body.appendChild(notificationDiv);
+    setTimeout(() => document.body.removeChild(notificationDiv), 3000);
+}
